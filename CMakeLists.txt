@@ -8,12 +8,11 @@ set(CMAKE_CXX_STANDARD 11)
 include_directories(src/Inc)
 add_executable(iot src/Src/main.cpp
         src/Src/coder.cpp
-        src/Src/send.cpp
+        src/Src/transfer.cpp
         src/Src/update.cpp
         src/Src/data.cpp
         src/Src/json_parser.cpp
         src/Src/camera.cpp
-        src/Src/receive.cpp
 )
 
 find_library(CJSON_LIB cjson)

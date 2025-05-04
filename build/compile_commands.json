@@ -13,9 +13,9 @@
 },
 {
   "directory": "/home/akira/codespace/iot/build",
-  "command": "/usr/bin/c++ -I/home/akira/codespace/iot/src/Inc -I/usr/include/cjson -isystem /usr/include/opencv4 -g -std=gnu++11 -Wall -Wextra -Wpedantic -Werror -g -o CMakeFiles/iot.dir/src/Src/send.cpp.o -c /home/akira/codespace/iot/src/Src/send.cpp",
-  "file": "/home/akira/codespace/iot/src/Src/send.cpp",
-  "output": "CMakeFiles/iot.dir/src/Src/send.cpp.o"
+  "command": "/usr/bin/c++ -I/home/akira/codespace/iot/src/Inc -I/usr/include/cjson -isystem /usr/include/opencv4 -g -std=gnu++11 -Wall -Wextra -Wpedantic -Werror -g -o CMakeFiles/iot.dir/src/Src/transfer.cpp.o -c /home/akira/codespace/iot/src/Src/transfer.cpp",
+  "file": "/home/akira/codespace/iot/src/Src/transfer.cpp",
+  "output": "CMakeFiles/iot.dir/src/Src/transfer.cpp.o"
 },
 {
   "directory": "/home/akira/codespace/iot/build",
@@ -40,11 +40,5 @@
   "command": "/usr/bin/c++ -I/home/akira/codespace/iot/src/Inc -I/usr/include/cjson -isystem /usr/include/opencv4 -g -std=gnu++11 -Wall -Wextra -Wpedantic -Werror -g -o CMakeFiles/iot.dir/src/Src/camera.cpp.o -c /home/akira/codespace/iot/src/Src/camera.cpp",
   "file": "/home/akira/codespace/iot/src/Src/camera.cpp",
   "output": "CMakeFiles/iot.dir/src/Src/camera.cpp.o"
-},
-{
-  "directory": "/home/akira/codespace/iot/build",
-  "command": "/usr/bin/c++ -I/home/akira/codespace/iot/src/Inc -I/usr/include/cjson -isystem /usr/include/opencv4 -g -std=gnu++11 -Wall -Wextra -Wpedantic -Werror -g -o CMakeFiles/iot.dir/src/Src/receive.cpp.o -c /home/akira/codespace/iot/src/Src/receive.cpp",
-  "file": "/home/akira/codespace/iot/src/Src/receive.cpp",
-  "output": "CMakeFiles/iot.dir/src/Src/receive.cpp.o"
 }
 ]
