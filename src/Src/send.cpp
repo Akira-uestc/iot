@@ -48,8 +48,8 @@ int send_light_over_serial(Light* light) {
 }
 
 int configure_serial(int fd) {
-    termios options{};
-    if (tcgetattr(fd, &options)) {
+    struct termios options{};
+    if (tcgetattr(fd, &options) < 0) {
         perror("获取串口属性失败");
         return -1;
     }
@@ -58,11 +58,12 @@ int configure_serial(int fd) {
     cfsetispeed(&options, B115200);
     cfsetospeed(&options, B115200);
 
-    options.c_cflag &= ~CSTOPB;  // 1位停止位
-    options.c_cc[VMIN] = 0;     // 非阻塞读取
-    options.c_cc[VTIME] = 10;   // 1秒超时
+    options.c_cflag |= (CLOCAL | CREAD); // 启用接收
+    options.c_cflag &= ~CSTOPB;          // 1位停止位
+    options.c_cc[VMIN] = sizeof(Light);  // 接收最小字节数
+    options.c_cc[VTIME] = 10;            // 超时 1 秒（单位0.1s）
 
-    if (tcsetattr(fd, TCSANOW, &options)) {
+    if (tcsetattr(fd, TCSANOW, &options) < 0) {
         perror("配置串口失败");
         return -1;
     }
