@@ -1,0 +1,50 @@
+[
+{
+  "directory": "/home/akira/codespace/iot/build",
+  "command": "/usr/bin/c++ -I/home/akira/codespace/iot/src/Inc -I/usr/include/cjson -isystem /usr/include/opencv4 -g -std=gnu++11 -Wall -Wextra -Wpedantic -Werror -g -o CMakeFiles/iot.dir/src/Src/main.cpp.o -c /home/akira/codespace/iot/src/Src/main.cpp",
+  "file": "/home/akira/codespace/iot/src/Src/main.cpp",
+  "output": "CMakeFiles/iot.dir/src/Src/main.cpp.o"
+},
+{
+  "directory": "/home/akira/codespace/iot/build",
+  "command": "/usr/bin/c++ -I/home/akira/codespace/iot/src/Inc -I/usr/include/cjson -isystem /usr/include/opencv4 -g -std=gnu++11 -Wall -Wextra -Wpedantic -Werror -g -o CMakeFiles/iot.dir/src/Src/coder.cpp.o -c /home/akira/codespace/iot/src/Src/coder.cpp",
+  "file": "/home/akira/codespace/iot/src/Src/coder.cpp",
+  "output": "CMakeFiles/iot.dir/src/Src/coder.cpp.o"
+},
+{
+  "directory": "/home/akira/codespace/iot/build",
+  "command": "/usr/bin/c++ -I/home/akira/codespace/iot/src/Inc -I/usr/include/cjson -isystem /usr/include/opencv4 -g -std=gnu++11 -Wall -Wextra -Wpedantic -Werror -g -o CMakeFiles/iot.dir/src/Src/send.cpp.o -c /home/akira/codespace/iot/src/Src/send.cpp",
+  "file": "/home/akira/codespace/iot/src/Src/send.cpp",
+  "output": "CMakeFiles/iot.dir/src/Src/send.cpp.o"
+},
+{
+  "directory": "/home/akira/codespace/iot/build",
+  "command": "/usr/bin/c++ -I/home/akira/codespace/iot/src/Inc -I/usr/include/cjson -isystem /usr/include/opencv4 -g -std=gnu++11 -Wall -Wextra -Wpedantic -Werror -g -o CMakeFiles/iot.dir/src/Src/update.cpp.o -c /home/akira/codespace/iot/src/Src/update.cpp",
+  "file": "/home/akira/codespace/iot/src/Src/update.cpp",
+  "output": "CMakeFiles/iot.dir/src/Src/update.cpp.o"
+},
+{
+  "directory": "/home/akira/codespace/iot/build",
+  "command": "/usr/bin/c++ -I/home/akira/codespace/iot/src/Inc -I/usr/include/cjson -isystem /usr/include/opencv4 -g -std=gnu++11 -Wall -Wextra -Wpedantic -Werror -g -o CMakeFiles/iot.dir/src/Src/data.cpp.o -c /home/akira/codespace/iot/src/Src/data.cpp",
+  "file": "/home/akira/codespace/iot/src/Src/data.cpp",
+  "output": "CMakeFiles/iot.dir/src/Src/data.cpp.o"
+},
+{
+  "directory": "/home/akira/codespace/iot/build",
+  "command": "/usr/bin/c++ -I/home/akira/codespace/iot/src/Inc -I/usr/include/cjson -isystem /usr/include/opencv4 -g -std=gnu++11 -Wall -Wextra -Wpedantic -Werror -g -o CMakeFiles/iot.dir/src/Src/json_parser.cpp.o -c /home/akira/codespace/iot/src/Src/json_parser.cpp",
+  "file": "/home/akira/codespace/iot/src/Src/json_parser.cpp",
+  "output": "CMakeFiles/iot.dir/src/Src/json_parser.cpp.o"
+},
+{
+  "directory": "/home/akira/codespace/iot/build",
+  "command": "/usr/bin/c++ -I/home/akira/codespace/iot/src/Inc -I/usr/include/cjson -isystem /usr/include/opencv4 -g -std=gnu++11 -Wall -Wextra -Wpedantic -Werror -g -o CMakeFiles/iot.dir/src/Src/camera.cpp.o -c /home/akira/codespace/iot/src/Src/camera.cpp",
+  "file": "/home/akira/codespace/iot/src/Src/camera.cpp",
+  "output": "CMakeFiles/iot.dir/src/Src/camera.cpp.o"
+},
+{
+  "directory": "/home/akira/codespace/iot/build",
+  "command": "/usr/bin/c++ -I/home/akira/codespace/iot/src/Inc -I/usr/include/cjson -isystem /usr/include/opencv4 -g -std=gnu++11 -Wall -Wextra -Wpedantic -Werror -g -o CMakeFiles/iot.dir/src/Src/receive.cpp.o -c /home/akira/codespace/iot/src/Src/receive.cpp",
+  "file": "/home/akira/codespace/iot/src/Src/receive.cpp",
+  "output": "CMakeFiles/iot.dir/src/Src/receive.cpp.o"
+}
+]
