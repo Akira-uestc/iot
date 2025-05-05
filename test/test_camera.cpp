@@ -185,14 +185,6 @@ void processVideo(const string& videoPath, Car_mgr& mgr) {
     cap.release();
 }
 
-void* car_update(void* arg) {
-    (void)arg;
-    while (1) {
-        processVideo("/dev/video0",*car_mgr);
-    }
-}
-
-/*
 int main(int argc, char** argv) {
     Car_mgr mgr;
     mgr.car_num = 0;
@@ -214,4 +206,3 @@ int main(int argc, char** argv) {
     cout << "通过终点线的车辆总数: " << mgr.car_num << endl;
     return 0;
 }
-*/

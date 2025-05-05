@@ -4,6 +4,7 @@
  * Description:
  */
 
+#include <cstddef>
 #include <cstdio>
 #include <cstdlib>
 #include <fcntl.h>
@@ -23,6 +24,7 @@ extern int sync_from_remote();
 extern int configure_serial(int fd);
 extern void* send_thread(void* arg);
 extern void* recv_thread(void* arg);
+extern void* car_update(void* arg);
 
 int serial_fd = -1;
 
@@ -39,12 +41,14 @@ int main() {
         return -1;
     }
 
-    pthread_t send_tid, recv_tid;
+    pthread_t send_tid, recv_tid, cam_tid;
     pthread_create(&send_tid, NULL, send_thread, NULL);
     pthread_create(&recv_tid, NULL, recv_thread, NULL);
+    pthread_create(&cam_tid, NULL, car_update, NULL);
 
     pthread_join(send_tid, NULL);
     pthread_join(recv_tid, NULL);
+    pthread_join(cam_tid, NULL);
 
     close(serial_fd);
     return 0;
