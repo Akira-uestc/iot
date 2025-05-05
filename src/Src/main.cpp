@@ -20,13 +20,13 @@ Car_mgr* car_mgr = (Car_mgr*)malloc(sizeof(Car_mgr));
 Light* light_struct = (Light*)malloc(sizeof(Light));
 Recv* recv_struct = (Recv*)malloc(sizeof(Recv));
 
+int serial_fd = -1;
+
 extern int sync_from_remote();
 extern int configure_serial(int fd);
 extern void* send_thread(void* arg);
 extern void* recv_thread(void* arg);
 extern void* car_update(void* arg);
-
-int serial_fd = -1;
 
 int main() {
     printf("Raspberry Pi client\n");

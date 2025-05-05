@@ -187,31 +187,9 @@ void processVideo(const string& videoPath, Car_mgr& mgr) {
 
 void* car_update(void* arg) {
     (void)arg;
+    car_mgr->car_num = 0;
+    car_mgr->origin_head = car_mgr->head = nullptr;
     while (1) {
         processVideo("/dev/video0",*car_mgr);
     }
 }
-
-/*
-int main(int argc, char** argv) {
-    Car_mgr mgr;
-    mgr.car_num = 0;
-    mgr.origin_head = mgr.head = nullptr;
-    if (argc < 2) {
-        cout << "请指定图像文件或视频路径参数" << endl;
-        return -1;
-    }
-    string inputPath = argv[1];
-    // 判断输入类型：图像还是视频/摄像头
-    Mat image = imread(inputPath);
-    if (!image.empty()) {
-        // 单张图像处理
-        processFrame(image, mgr);
-    } else {
-        // 视频流处理
-        processVideo(inputPath, mgr);
-    }
-    cout << "通过终点线的车辆总数: " << mgr.car_num << endl;
-    return 0;
-}
-*/

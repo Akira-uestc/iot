@@ -9,12 +9,14 @@
 #include <termios.h>
 #include <unistd.h>
 #include "../Inc/status.h"
-#include "coder.h"
 #include <cstring>
 #include <pthread.h>
 #include "json_parser.h"
 
 extern int sync_from_remote();
+extern int code_light_groups_normal_mode(Light* light_struct);
+extern int code_light_groups_smart_mode(Car_mgr* car_mgr, Light* light_struct);
+extern void parse_light_groups(Light *light_struct);
 
 extern ControlData* control_container;
 extern Recv* recv_struct;
