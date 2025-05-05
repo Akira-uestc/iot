@@ -17,10 +17,10 @@
 extern int sync_from_remote();
 
 extern ControlData* control_container;
-extern int serial_fd;
 extern Recv* recv_struct;
 extern Car_mgr* car_mgr;
 extern Light* light_struct;
+extern int serial_fd;
 
 int configure_serial(int fd) {
     struct termios options{};

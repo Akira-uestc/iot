@@ -39,7 +39,7 @@ int code_light_groups_smart_mode(Car_mgr* car_mgr, Light* light_struct) {
             current = current->next;
         }
 
-        // 根据车辆密度动态归一化亮度（避免亮度失控）
+        // 归一化亮度
         if (brightness > 1.0) brightness = 1.0;
 
         origin_values[x] = (u_int16_t)(brightness * 65535.0);

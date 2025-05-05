@@ -19,7 +19,7 @@ typedef struct Car_mgr {
     car* head;
 } Car_mgr;
 
-typedef struct light {
+typedef struct __attribute__((packed)) light {
     long long int light_group_0;
     long long int light_group_1;
     long long int light_group_2;
