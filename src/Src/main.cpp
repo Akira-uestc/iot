@@ -33,7 +33,7 @@ int main() {
     printf("Raspberry Pi client\n");
 
     // 打开串口0
-    if ((serial_fd = open("/dev/serial0", O_RDWR | O_NOCTTY)) < 0) {
+    if ((serial_fd = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY)) < 0) {
         perror("打开串口失败");
         return -1;
     }

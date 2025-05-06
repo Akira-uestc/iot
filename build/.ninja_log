@@ -4,8 +4,6 @@
 1	59	1746524951206979371	CMakeFiles/iot.dir/src/Src/main.cpp.o	5839d20be7aa2b22
 2	47	1746524951208987209	CMakeFiles/iot.dir/src/Src/json_parser.cpp.o	6ea073bb8c1afcf3
 2	59	1746524951208705484	CMakeFiles/iot.dir/src/Src/transfer.cpp.o	46e754d9dd3af72a
-2	84	1746524951208896898	CMakeFiles/iot.dir/src/Src/data.cpp.o	c89127b2ba4baf10
-1269	1623	1746524952474979366	iot	ced08d03aa488fa7
-2	1269	1746524951209084045	CMakeFiles/iot.dir/src/Src/camera.cpp.o	2ada0869804efe1c
 1	59	1746525108163978772	CMakeFiles/iot.dir/src/Src/data.cpp.o	c89127b2ba4baf10
 59	421	1746525108221978772	iot	ced08d03aa488fa7
+2	1269	1746524951209084045	CMakeFiles/iot.dir/src/Src/camera.cpp.o	2ada0869804efe1c
