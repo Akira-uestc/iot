@@ -76,7 +76,6 @@ JsonError parse_data(const char* filename, SystemData* out) {
         cJSON_Delete(root);
         return JSON_INVALID_FORMAT;
     }
-
     for (int i = 0; i < 24; i++) {
         out->energy[i] = cJSON_GetArrayItem(energy, i)->valuedouble;
     }
@@ -87,22 +86,32 @@ JsonError parse_data(const char* filename, SystemData* out) {
         cJSON_Delete(root);
         return JSON_INVALID_FORMAT;
     }
-
     for (int i = 0; i < 24; i++) {
         out->traffic[i] = cJSON_GetArrayItem(traffic, i)->valueint;
     }
 
+    // 解析 uptime（字符串转整型）
     cJSON* uptime = cJSON_GetObjectItem(root, "uptime");
-    if (!cJSON_IsArray(uptime) || cJSON_GetArraySize(uptime) != 1)
-    {
+    if (cJSON_IsString(uptime) && uptime->valuestring) {
+        out->uptime = atoi(uptime->valuestring);
+    } else {
         cJSON_Delete(root);
         return JSON_INVALID_FORMAT;
     }
-    out->uptime = uptime->valueint;
+
+    // 解析 adjustment（字符串转整型）
+    cJSON* adjustment = cJSON_GetObjectItem(root, "adjustment");
+    if (cJSON_IsString(adjustment) && adjustment->valuestring) {
+        out->adjustment = atoi(adjustment->valuestring);
+    } else {
+        cJSON_Delete(root);
+        return JSON_INVALID_FORMAT;
+    }
 
     cJSON_Delete(root);
     return JSON_OK;
 }
+
 
 // 不使用
 JsonError save_control(const char* filename, const ControlData* data) {
@@ -141,6 +150,19 @@ JsonError save_data(const char* filename, const SystemData* data) {
 
     cJSON* traffic = cJSON_CreateIntArray(data->traffic, 24);
     cJSON_AddItemToObject(root, "traffic", traffic);
+
+    // 整型转字符串缓冲区
+    char buf[16];
+
+    // 保存 uptime 为字符串
+    snprintf(buf, sizeof(buf), "%d", data->uptime);
+    cJSON* uptime = cJSON_CreateString(buf);
+    cJSON_AddItemToObject(root, "uptime", uptime);
+
+    // 保存 adjustment 为字符串
+    snprintf(buf, sizeof(buf), "%d", data->adjustment);
+    cJSON* adjustment = cJSON_CreateString(buf);
+    cJSON_AddItemToObject(root, "adjustment", adjustment);
 
     char* json_str = cJSON_Print(root);
     cJSON_Delete(root);

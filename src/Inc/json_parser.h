@@ -15,6 +15,7 @@ typedef struct {
 
 typedef struct {
     int uptime;
+    int adjustment;
     double energy[24];
     int traffic[24];
 } SystemData;

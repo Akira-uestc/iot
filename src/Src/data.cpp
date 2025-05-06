@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <cstring>
 #include <math.h>
 #include "json_parser.h"
@@ -20,6 +21,8 @@ int get_current_hour() {
 // 单个LED的功率为50mW
 void* collect_data(void* arg) {
     (void)arg;
+    data_container->traffic[24] = {0};
+    data_container->adjustment = 0;
     double power_comsumption[24] = {0};
     int last_hour = get_current_hour();
     int last_car_num = car_mgr->car_num;
@@ -28,7 +31,7 @@ void* collect_data(void* arg) {
     while (1) {
         int current_hour = get_current_hour();
         for (int i = 0; i < 16; i++) {
-            power_comsumption[current_hour] += (double)origin_values[i] / 65535.0 * 50.0;
+            power_comsumption[current_hour] += (double)origin_values[i] / 65535.0 * 50.0 / 3600.0;
         }
 
         if (current_hour != last_hour) {

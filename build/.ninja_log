@@ -1,12 +1,11 @@
 # ninja log v6
-1	23	1746447611880754704	CMakeFiles/iot.dir/src/Src/update.cpp.o	67c40949741d9621
-1	91	1746447611880585349	CMakeFiles/iot.dir/src/Src/coder.cpp.o	f8f3cff227e2475f
-1	49	1746447611880665898	CMakeFiles/iot.dir/src/Src/transfer.cpp.o	46e754d9dd3af72a
-2	43	1746447611880946171	CMakeFiles/iot.dir/src/Src/json_parser.cpp.o	6ea073bb8c1afcf3
-1	58	1746447611878998800	CMakeFiles/iot.dir/src/Src/main.cpp.o	5839d20be7aa2b22
-2	57	1746508849121990254	CMakeFiles/iot.dir/src/Src/data.cpp.o	c89127b2ba4baf10
-57	417	1746508849176990254	iot	ced08d03aa488fa7
-2	1225	1746447611881050652	CMakeFiles/iot.dir/src/Src/camera.cpp.o	2ada0869804efe1c
-2	38	1746509053954989473	CMakeFiles/iot.dir/src/Src/main.cpp.o	5839d20be7aa2b22
-2	59	1746509053956030598	CMakeFiles/iot.dir/src/Src/data.cpp.o	c89127b2ba4baf10
-59	418	1746509054011989473	iot	ced08d03aa488fa7
+2	22	1746524951208814937	CMakeFiles/iot.dir/src/Src/update.cpp.o	67c40949741d9621
+1	67	1746524951208619101	CMakeFiles/iot.dir/src/Src/coder.cpp.o	f8f3cff227e2475f
+1	59	1746524951206979371	CMakeFiles/iot.dir/src/Src/main.cpp.o	5839d20be7aa2b22
+2	47	1746524951208987209	CMakeFiles/iot.dir/src/Src/json_parser.cpp.o	6ea073bb8c1afcf3
+2	59	1746524951208705484	CMakeFiles/iot.dir/src/Src/transfer.cpp.o	46e754d9dd3af72a
+2	84	1746524951208896898	CMakeFiles/iot.dir/src/Src/data.cpp.o	c89127b2ba4baf10
+1269	1623	1746524952474979366	iot	ced08d03aa488fa7
+2	1269	1746524951209084045	CMakeFiles/iot.dir/src/Src/camera.cpp.o	2ada0869804efe1c
+1	59	1746525108163978772	CMakeFiles/iot.dir/src/Src/data.cpp.o	c89127b2ba4baf10
+59	421	1746525108221978772	iot	ced08d03aa488fa7
