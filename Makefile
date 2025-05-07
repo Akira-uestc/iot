@@ -11,6 +11,7 @@ clean:
 	rm -f cmake_install.cmake
 	rm -f CMakeOutput.log
 	rm -f CMakeError.log
+	rm -rf .cache
 	
 run:
 	cd build && ./iot

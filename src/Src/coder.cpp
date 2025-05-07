@@ -68,7 +68,8 @@ int code_light_groups_normal_mode(Light* light_struct) {
     long long int groups[4] = {0};
     
     for (int i = 0; i <16; i++) {
-        origin_values[i] = (control_container->lights[i].brightness/100)*65535;
+        double percentage = (double)control_container->lights[i].brightness / 100.0;
+        origin_values[i] = percentage*65535;
     }
 
     for (int i = 0; i < 4; i++) {
