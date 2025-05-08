@@ -10,6 +10,8 @@
 u_int16_t pwm_values[16] = {0};
 u_int16_t origin_values[16] = {0};
 extern ControlData* control_container;
+extern SystemData* data_container;
+extern Recv* recv_struct;
 
 #define LIGHT_RADIUS 0.2  // 灯影响范围（单位灯区间为1.0）
 #define GAUSSIAN_SIGMA 0.1  // 标准差
@@ -42,7 +44,7 @@ int code_light_groups_smart_mode(Car_mgr* car_mgr, Light* light_struct) {
         // 归一化亮度
         if (brightness > 1.0) brightness = 1.0;
 
-        origin_values[x] = (u_int16_t)(brightness * 65535.0);
+        origin_values[x] = (uint16_t)(brightness * data_container->adjustment * 65535.0);
     }
 
     // 灯光打包
@@ -66,7 +68,7 @@ int code_light_groups_smart_mode(Car_mgr* car_mgr, Light* light_struct) {
 
 int code_light_groups_normal_mode(Light* light_struct) {
     long long int groups[4] = {0};
-    
+
     for (int i = 0; i <16; i++) {
         double percentage = (double)control_container->lights[i].brightness / 100.0;
         origin_values[i] = percentage*65535;

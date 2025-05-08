@@ -11,6 +11,7 @@ extern ControlData* control_container;
 extern const char* data_path;
 extern u_int16_t origin_values[16];
 extern Car_mgr* car_mgr;
+extern Recv* recv_struct;
 
 int get_current_hour() {
     time_t now = time(NULL);
@@ -22,7 +23,7 @@ int get_current_hour() {
 void* collect_data(void* arg) {
     (void)arg;
     data_container->traffic[24] = {0};
-    data_container->adjustment = 0;
+    data_container->adjustment = recv_struct->light_sensor / 4096.0;
     double power_comsumption[24] = {0};
     int last_hour = get_current_hour();
     int last_car_num = car_mgr->car_num;

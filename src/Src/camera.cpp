@@ -1,5 +1,6 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
+#include <opencv2/videoio.hpp>
 #include <vector>
 #include <algorithm>
 #include "status.h"
@@ -17,7 +18,7 @@ void processFrame(const Mat& frame, Car_mgr& mgr) {
     // --- 1. 提取紫色跑道区域，检测跑道轮廓 --- 
     Mat purpleMask;
     // 紫色HSV范围 (需要根据实际情况调整阈值)
-    inRange(hsv, Scalar(125, 50, 50), Scalar(160, 255, 255), purpleMask);
+    inRange(hsv, Scalar(150, 80, 80), Scalar(170, 255, 255), purpleMask);
     // 形态学处理：开运算去噪、闭运算填充
     Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5));
     morphologyEx(purpleMask, purpleMask, MORPH_OPEN, kernel);
@@ -70,10 +71,10 @@ void processFrame(const Mat& frame, Car_mgr& mgr) {
     cvtColor(warped, warpedHSV, COLOR_BGR2HSV);
     Mat redMask;
     // 红色HSV范围：红色在0度和180度处，分两段处理
-    Mat redMask1, redMask2;
-    inRange(warpedHSV, Scalar(0, 120, 70), Scalar(10, 255, 255), redMask1);
-    inRange(warpedHSV, Scalar(170, 120, 70), Scalar(180, 255, 255), redMask2);
-    redMask = redMask1 | redMask2;
+    //Mat redMask1, redMask2;
+    //inRange(warpedHSV, Scalar(0, 120, 70), Scalar(10, 255, 255), redMask1);
+    //inRange(warpedHSV, Scalar(170, 120, 70), Scalar(180, 255, 255), redMask2);
+    inRange(warpedHSV, Scalar(0, 0, 0), Scalar(180, 255, 60), redMask);
     // 形态学去噪：开运算去小噪点，闭运算填充车体区域
     morphologyEx(redMask, redMask, MORPH_OPEN, kernel);
     morphologyEx(redMask, redMask, MORPH_CLOSE, kernel);
@@ -167,10 +168,10 @@ void processFrame(const Mat& frame, Car_mgr& mgr) {
  * 处理视频流：逐帧读取并调用processFrame处理
  */
 void processVideo(const string& videoPath, Car_mgr& mgr) {
-    VideoCapture cap;
+    VideoCapture cap(0,CAP_V4L2);
     // 支持摄像头（参数为0）或视频文件路径
-    if (videoPath == "0") cap.open(0);
-    else cap.open(videoPath);
+    if (videoPath == "0") cap.open(0,CAP_V4L2);
+    else cap.open(videoPath,CAP_V4L2);
     if (!cap.isOpened()) {
         cerr << "无法打开视频源" << endl;
         return;

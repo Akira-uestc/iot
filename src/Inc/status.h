@@ -5,6 +5,7 @@
 #ifndef STATUS_H
 #define STATUS_H
 
+#include <cstdint>
 typedef struct car {
     double pos_x;
     double pos_y;
@@ -27,7 +28,8 @@ typedef struct __attribute__((packed)) light {
 } Light;
 
 typedef struct recv {
-    int environment_brightness;
+    uint16_t light_sensor;
+    uint16_t hall_sensor;
 } Recv;
 
 #endif //STATUS_H
