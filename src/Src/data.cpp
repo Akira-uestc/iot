@@ -23,13 +23,14 @@ int get_current_hour() {
 void* collect_data(void* arg) {
     (void)arg;
     data_container->traffic[24] = {0};
-    data_container->adjustment = recv_struct->light_sensor / 4096.0;
     double power_comsumption[24] = {0};
     int last_hour = get_current_hour();
     int last_car_num = car_mgr->car_num;
     int init_hour = last_hour;
 
     while (1) {
+        data_container->adjustment = (double)recv_struct->light_sensor / 4096.0*100;
+        printf("adjustment: %d\n", data_container->adjustment);
         int current_hour = get_current_hour();
         for (int i = 0; i < 16; i++) {
             power_comsumption[current_hour] += (double)origin_values[i] / 65535.0 * 50.0 / 3600.0;
@@ -44,6 +45,8 @@ void* collect_data(void* arg) {
 
         data_container->uptime = current_hour - init_hour;
         memcpy(data_container->energy, power_comsumption, sizeof(data_container->energy));
+        printf("light_sensor: %d\n",recv_struct->light_sensor);
+        printf("hall_sensor: %d\n",recv_struct->hall_sensor);
 
         save_data(data_path, data_container);
         sleep(1);

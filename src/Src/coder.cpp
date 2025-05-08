@@ -6,6 +6,7 @@
 #include "../Inc/json_parser.h"
 #include <cmath>
 #include <sys/types.h>
+#include <stdio.h>
 
 u_int16_t pwm_values[16] = {0};
 u_int16_t origin_values[16] = {0};
@@ -44,7 +45,7 @@ int code_light_groups_smart_mode(Car_mgr* car_mgr, Light* light_struct) {
         // 归一化亮度
         if (brightness > 1.0) brightness = 1.0;
 
-        origin_values[x] = (uint16_t)(brightness * data_container->adjustment * 65535.0);
+        origin_values[x] = (uint16_t)(brightness * data_container->adjustment * 65535.0 / 100.0);
     }
 
     // 灯光打包
