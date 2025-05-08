@@ -6,6 +6,7 @@
 #define STATUS_H
 
 #include <cstdint>
+
 typedef struct car {
     double pos_x;
     double pos_y;

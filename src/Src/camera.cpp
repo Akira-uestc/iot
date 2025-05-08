@@ -143,7 +143,6 @@ void processVideo(const string& videoPath, Car_mgr& mgr) {
 
 void* car_update(void* arg) {
     (void)arg;
-    car_mgr->car_num = 0;
     car_mgr->origin_head = car_mgr->head = nullptr;
     while (1) {
         processVideo("/dev/video0",*car_mgr);
