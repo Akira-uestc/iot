@@ -1,3 +1,6 @@
+//
+// Created by akira on 6/14/25.
+//
 #include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
 #include <iostream>
@@ -74,6 +77,14 @@ void processFrame(cv::Mat frame,Car_mgr& mgr) {
     cv::findContours(purple_mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
     if (contours.empty()) {
         std::cerr << "没有找到紫色区域。" << std::endl;
+        Car* cur = mgr.origin_head;
+        while(cur != nullptr) {
+            Car* next = cur->next;
+            delete cur;
+            cur = next;
+        }
+        mgr.origin_head = mgr.head = nullptr;
+        return;
     }
 
     auto max_contour = *std::max_element(contours.begin(), contours.end(),
