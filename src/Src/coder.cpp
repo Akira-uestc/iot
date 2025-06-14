@@ -31,7 +31,7 @@ int code_light_groups_smart_mode(Car_mgr* car_mgr, Light* light_struct) {
 
         current = car_mgr->origin_head;
         while (current != NULL) {
-            double car_pos = current->pos_x;
+            double car_pos = current->center;
             double distance = fabs(light_pos - car_pos);
 
             if (distance <= LIGHT_RADIUS) {

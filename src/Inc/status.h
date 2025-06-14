@@ -8,8 +8,6 @@
 #include <cstdint>
 
 typedef struct car {
-    double pos_x;
-    double pos_y;
     double center;
     car* next;
     car* prev;

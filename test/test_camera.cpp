@@ -13,6 +13,7 @@ extern Car_mgr* car_mgr;
 void processFrame(const Mat& frame, Car_mgr& mgr) {
     if (frame.empty()) return;
 
+    // 清空上一次保存的车辆链表
     Car* cur = mgr.origin_head;
     while (cur != nullptr) {
         Car* next = cur->next;
@@ -21,15 +22,22 @@ void processFrame(const Mat& frame, Car_mgr& mgr) {
     }
     mgr.origin_head = mgr.head = nullptr;
 
+    // 1. 显示原始图像
+    imshow("原始图像", frame);
+    waitKey(500); // 暂停0.5秒查看
+
     Mat hsv;
     cvtColor(frame, hsv, COLOR_BGR2HSV);
 
-    // --- 1. 提取紫色跑道区域 ---
+    // 2. 提取紫色跑道区域
     Mat purpleMask;
     inRange(hsv, Scalar(150, 80, 80), Scalar(170, 255, 255), purpleMask);
     Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5));
     morphologyEx(purpleMask, purpleMask, MORPH_OPEN, kernel);
     morphologyEx(purpleMask, purpleMask, MORPH_CLOSE, kernel);
+
+    imshow("紫色跑道 Mask", purpleMask);
+    waitKey(500);
 
     vector<vector<Point>> contoursTrack;
     findContours(purpleMask, contoursTrack, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
@@ -71,7 +79,10 @@ void processFrame(const Mat& frame, Car_mgr& mgr) {
     Mat warped;
     warpPerspective(frame, warped, M, Size((int)maxWidth, (int)maxHeight));
 
-    // --- 3. 提取红色车辆 ---
+    imshow("透视变换图像", warped);
+    waitKey(500);
+
+    // 3. 提取红色车辆
     Mat warpedHSV;
     cvtColor(warped, warpedHSV, COLOR_BGR2HSV);
     Mat redMask;
@@ -79,10 +90,16 @@ void processFrame(const Mat& frame, Car_mgr& mgr) {
     morphologyEx(redMask, redMask, MORPH_OPEN, kernel);
     morphologyEx(redMask, redMask, MORPH_CLOSE, kernel);
 
+    imshow("红色车辆 Mask", redMask);
+    waitKey(500);
+
     vector<vector<Point>> contoursRed;
     findContours(redMask, contoursRed, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
 
-    // --- 4. 插入当前帧检测到的车辆 ---
+    // 可视化图像
+    Mat carVis = warped.clone();
+
+    // 4. 插入当前帧检测到的车辆
     for (auto& cnt : contoursRed) {
         double area = contourArea(cnt);
         if (area < 100.0) continue;
@@ -106,9 +123,15 @@ void processFrame(const Mat& frame, Car_mgr& mgr) {
         } else {
             mgr.origin_head = mgr.head = node;
         }
+
+        // 可视化中心点
+        circle(carVis, Point((int)cx, (int)cy), 5, Scalar(0, 255, 0), -1);
     }
 
-    // --- 输出 ---
+    imshow("检测到的车辆中心", carVis);
+    waitKey(500);
+
+    // 输出
     int idx = 0;
     for (Car* p = mgr.origin_head; p != nullptr; p = p->next) {
         cout << "Car[" << idx++ << "]: x=" << p->pos_x 

@@ -1,4 +1,5 @@
 #include <opencv2/opencv.hpp>
+#include <opencv2/core.hpp>
 #include <iostream>
 #include <opencv2/videoio.hpp>
 #include <unistd.h>
@@ -6,15 +7,52 @@
 #include <algorithm>
 #include "status.h"
 
-using namespace cv;
-using namespace std;
-
 extern Car_mgr* car_mgr;
 
-void processFrame(const Mat& frame, Car_mgr& mgr) {
-    if (frame.empty()) return;
+void show_image(const cv::Mat& image, const std::string& window_name) {
+    cv::namedWindow(window_name, cv::WINDOW_AUTOSIZE);
+    cv::imshow(window_name, image);
+    cv::waitKey(0);
+    cv::destroyAllWindows();
+}
 
-    // --- 清空上一次保存的车辆链表 ---
+std::vector<float> calculateZeroSegmentCenters(const std::vector<int>& column_mean) {
+    std::vector<float> centers;
+    int n = column_mean.size();
+    if(n == 0) return centers;
+
+    int start = -1;
+    bool in_segment = false;
+
+    for(int i = 0; i < n; ++i) {
+        if(column_mean[i] == 0) {
+            if(!in_segment) {
+                start = i;
+                in_segment = true;
+            }
+        } else {
+            if(in_segment) {
+                float center = (start + (i-1)) / 2.0f;
+                centers.push_back(center / n);
+                in_segment = false;
+            }
+        }
+    }
+
+    if(in_segment) {
+        float center = (start + (n-1)) / 2.0f;
+        centers.push_back(center / n);
+    }
+
+    return centers;
+}
+
+void processFrame(cv::Mat frame,Car_mgr& mgr) {
+    std::vector<float> centers;
+    cv::Mat image = frame.clone();
+    cv::Mat hsv;
+    cv::cvtColor(image, hsv, cv::COLOR_BGR2HSV);
+
     Car* cur = mgr.origin_head;
     while (cur != nullptr) {
         Car* next = cur->next;
@@ -23,81 +61,75 @@ void processFrame(const Mat& frame, Car_mgr& mgr) {
     }
     mgr.origin_head = mgr.head = nullptr;
 
-    Mat hsv;
-    cvtColor(frame, hsv, COLOR_BGR2HSV);
+    cv::Scalar lower_purple(150, 80, 80);
+    cv::Scalar upper_purple(170, 255, 255);
+    cv::Mat purple_mask;
+    cv::inRange(hsv, lower_purple, upper_purple, purple_mask);
 
-    // --- 1. 提取紫色跑道区域 ---
-    Mat purpleMask;
-    inRange(hsv, Scalar(150, 80, 80), Scalar(170, 255, 255), purpleMask);
-    Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5));
-    morphologyEx(purpleMask, purpleMask, MORPH_OPEN, kernel);
-    morphologyEx(purpleMask, purpleMask, MORPH_CLOSE, kernel);
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT,cv::Size(3, 3));
+    // cv::morphologyEx(purple_mask, purple_mask, cv::MORPH_OPEN, kernel);
+    cv::morphologyEx(purple_mask, purple_mask, cv::MORPH_CLOSE, kernel);
 
-    vector<vector<Point>> contoursTrack;
-    findContours(purpleMask, contoursTrack, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
-    if (contoursTrack.empty()) return;
-
-    int maxIdx = 0;
-    double maxArea = 0;
-    for (size_t i = 0; i < contoursTrack.size(); i++) {
-        double area = contourArea(contoursTrack[i]);
-        if (area > maxArea) {
-            maxArea = area;
-            maxIdx = i;
-        }
+    std::vector<std::vector<cv::Point>> contours;
+    cv::findContours(purple_mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+    if (contours.empty()) {
+        std::cerr << "没有找到紫色区域。" << std::endl;
     }
 
-    RotatedRect box = minAreaRect(contoursTrack[maxIdx]);
-    Point2f pts[4];
-    box.points(pts);
-    sort(pts, pts+4, [](Point2f a, Point2f b){ return a.y < b.y; });
-    Point2f topPts[2] = { pts[0], pts[1] };
-    Point2f botPts[2] = { pts[2], pts[3] };
-    if (topPts[0].x > topPts[1].x) swap(topPts[0], topPts[1]);
-    if (botPts[0].x > botPts[1].x) swap(botPts[0], botPts[1]);
+    auto max_contour = *std::max_element(contours.begin(), contours.end(),
+        [](const std::vector<cv::Point>& a, const std::vector<cv::Point>& b) {
+            return cv::contourArea(a) < cv::contourArea(b);
+        });
 
-    Point2f topLeft = topPts[0], topRight = topPts[1];
-    Point2f bottomLeft = botPts[0], bottomRight = botPts[1];
+    cv::Rect rect = cv::boundingRect(max_contour);
+    cv::Mat cropped = purple_mask(rect);
 
-    double widthTop = norm(topRight - topLeft);
-    double widthBot = norm(bottomRight - bottomLeft);
-    double maxWidth = max(widthTop, widthBot);
-    double heightLeft = norm(bottomLeft - topLeft);
-    double heightRight = norm(bottomRight - topRight);
-    double maxHeight = max(heightLeft, heightRight);
+    std::vector<int> column_mean(cropped.cols, 0);
+    int threshold = 0;
+    int mean_sum = 255;
 
-    vector<Point2f> srcPts = { topLeft, topRight, bottomRight, bottomLeft };
-    vector<Point2f> dstPts = { Point2f(0,0), Point2f(maxWidth-1,0),
-                               Point2f(maxWidth-1,maxHeight-1), Point2f(0,maxHeight-1) };
-    Mat M = getPerspectiveTransform(srcPts, dstPts);
-    Mat warped;
-    warpPerspective(frame, warped, M, Size((int)maxWidth, (int)maxHeight));
+    for (int x = 0; x < cropped.cols; ++x) {
+        int y_start = -1, y_end = -1;
 
-    // --- 3. 提取红色车辆 ---
-    Mat warpedHSV;
-    cvtColor(warped, warpedHSV, COLOR_BGR2HSV);
-    Mat redMask;
-    inRange(warpedHSV, Scalar(0, 0, 0), Scalar(180, 255, 60), redMask);
-    morphologyEx(redMask, redMask, MORPH_OPEN, kernel);
-    morphologyEx(redMask, redMask, MORPH_CLOSE, kernel);
+        for (int y = 0; y < cropped.rows; ++y) {
+            if (cropped.at<uchar>(y, x)) {
+                y_start = y;
+                break;
+            }
+        }
 
-    vector<vector<Point>> contoursRed;
-    findContours(redMask, contoursRed, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+        for (int y = cropped.rows - 1; y >= 0; --y) {
+            if (cropped.at<uchar>(y, x)) {
+                y_end = y;
+                break;
+            }
+        }
+        if (y_start >= 0 && y_end >= y_start) {
+            int sum = 0;
+            for (int y = y_start; y <= y_end; ++y) {
+                sum += cropped.at<uchar>(y, x);
+            }
+            column_mean[x] = sum / (y_end - y_start + 1);
+            threshold = mean_sum / (x + 1);
+            mean_sum += column_mean[x];
+            // std::cout << "x: " << x << ", column_mean: " << column_mean[x] << ", threshold: " << threshold << std::endl;
+            if (column_mean[x] >= threshold) {
+                column_mean[x] = 1;
+            } else column_mean[x] = 0;
+        }
+    }
+    // for (size_t i = 0; i < column_mean.size(); ++i) {
+    //     std::cout << column_mean[i] << " ";
+    // }
+    //
+    centers.clear();
+    centers = calculateZeroSegmentCenters(column_mean);
 
-    // --- 4. 插入当前帧检测到的车辆 ---
-    for (auto& cnt : contoursRed) {
-        double area = contourArea(cnt);
-        if (area < 100.0) continue;
-        Moments m = moments(cnt);
-        if (m.m00 == 0) continue;
-        float cx = float(m.m10 / m.m00);
-        float cy = float(m.m01 / m.m00);
-
-        double pos_x = cy / maxHeight;
-        double center = cx - maxWidth / 2.0;
-
+    // for (size_t i = 0; i < centers.size(); ++i) {
+    //     std::cout << "Center " << i << ": " << centers[i] << std::endl;
+    // }
+    for (float center : centers) {
         Car* node = new Car();
-        node->pos_x = pos_x;
         node->center = center;
         node->prev = mgr.head;
         node->next = nullptr;
@@ -109,34 +141,22 @@ void processFrame(const Mat& frame, Car_mgr& mgr) {
             mgr.origin_head = mgr.head = node;
         }
     }
-
-    // --- 输出 ---
-    int idx = 0;
-    for (Car* p = mgr.origin_head; p != nullptr; p = p->next) {
-        cout << "Car[" << idx++ << "]: x=" << p->pos_x 
-             << ", center=" << p->center << endl;
-    }
 }
 
-/**
- * 处理视频流：逐帧读取并调用processFrame处理
- */
-void processVideo(const string& videoPath, Car_mgr& mgr) {
-    VideoCapture cap(0,CAP_V4L2);
-    // 支持摄像头（参数为0）或视频文件路径
-    if (videoPath == "0") cap.open(0,CAP_V4L2);
-    else cap.open(videoPath,CAP_V4L2);
+void processVideo(const std::string& videoPath, Car_mgr& mgr) {
+    cv::VideoCapture cap(0,cv::CAP_V4L2);
+    if (videoPath == "0") cap.open(0,cv::CAP_V4L2);
+    else cap.open(videoPath,cv::CAP_V4L2);
+
     if (!cap.isOpened()) {
-        cerr << "无法打开视频源" << endl;
+        std::cerr << "无法打开视频源" << std::endl;
         return;
     }
-    Mat frame;
+
+    cv::Mat frame;
     while (cap.read(frame)) {
         processFrame(frame, mgr);
         sleep(1);
-        // 可视化（非必须）：将红色轮廓画回图像
-        //imshow("Frame", frame);
-        //if (waitKey(30) >= 0) break;
     }
     cap.release();
 }
@@ -148,3 +168,4 @@ void* car_update(void* arg) {
         processVideo("/dev/video0",*car_mgr);
     }
 }
+
