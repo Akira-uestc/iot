@@ -63,10 +63,11 @@ void* collect_data(void* arg) {
         memcpy(data_container->energy, power_comsumption, sizeof(data_container->energy));
 
         // 调试输出，需要时再取消注释
-        // printf("light_sensor: %d\n", recv_struct->light_sensor);
-        // printf("hall_sensor: %d\n", recv_struct->hall_sensor);
+        printf("light_sensor: %d\n", recv_struct->light_sensor);
+        printf("hall_sensor: %d\n", recv_struct->hall_sensor);
 
         save_data(data_path, data_container);
+        sleep(1);
     }
 }
 
